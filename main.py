@@ -74,7 +74,7 @@ users = [
 
 app = FastAPI()
 
-@app.post("/api/user", response_model=User)
+@app.post("/api/v1/user", response_model=User)
 def create_user(user: User):
     for u in users:
         if u.email == user.email:
@@ -82,7 +82,7 @@ def create_user(user: User):
     users.append(user)
     return user
 
-@app.get("/api/user", response_model=List[User])
+@app.get("/api/v1/user", response_model=List[User])
 def list_users(full_name: str = None, gender: str = None):
     if full_name and gender:
         return [
@@ -95,14 +95,14 @@ def list_users(full_name: str = None, gender: str = None):
         return [user for user in users if user.gender == gender.lower()]
     return users
 
-@app.get("/api/user/{user_id}", response_model=User)
+@app.get("/api/v1/user/{user_id}", response_model=User)
 def get_user(user_id: str):
     for user in users:
         if user.id == user_id:
             return user
     raise HTTPException(status_code=404, detail="User not found")
 
-@app.put("/api/user/{user_id}", response_model=User)
+@app.put("/api/v1/user/{user_id}", response_model=User)
 def update_user(user_id: str, user_update: User):
     for i, user in enumerate(users):
         if user.id == user_id:
@@ -118,7 +118,7 @@ def update_user(user_id: str, user_update: User):
             return user
     raise HTTPException(status_code=404, detail="User not found")
 
-@app.delete("/api/user/{user_id}")
+@app.delete("/api/v1/user/{user_id}")
 def delete_user(user_id: str):
     for i, user in enumerate(users):
         if user.id == user_id:
