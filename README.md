@@ -23,9 +23,10 @@ Xóa 1 user (DEL /api/v1/user/:id)
 Tự fake 1,2 người dùng xong lưu vào 1 biến global 
 Tạo model cho request body và response bằng pydantic
 Chia các tầng 
-api - tạo các API bằng fastapi
+
 schemas - Lưu các model pydantic
 services - Xử lý các tác vụ mà nhận được từ api và trả kết quả
+api - tạo các API bằng fastapi
 
 # from fastapi import FastAPI, HTTPException
 # from fastapi.param_functions import Query

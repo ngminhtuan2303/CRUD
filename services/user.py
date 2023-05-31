@@ -1,8 +1,8 @@
 from typing import List
-from schemas import User
+from schemas.user import User
 from datetime import datetime
 from uuid import uuid4
-from data import users
+from data.user import users
 
 
 def create_user(user: User) -> User:

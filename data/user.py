@@ -4,7 +4,7 @@ from uuid import uuid4
 
 users = [
     User(
-        id=str(uuid4()),
+        #id=str(uuid4()),
         full_name="Nguyễn Văn A",
         birthday=datetime.strptime("1990-01-01", "%Y-%m-%d"),
         gender="Male",
@@ -13,7 +13,7 @@ users = [
         email="nguyenvana@gmail.com",
     ),
     User(
-        id=str(uuid4()),
+        #id=str(uuid4()),
         full_name="Lê Thị B",
         birthday=datetime.strptime("1995-02-01", "%Y-%m-%d"),
         gender="Female",
