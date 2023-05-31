@@ -7,5 +7,7 @@ from pydantic import BaseModel, validator, EmailStr
 
 app = FastAPI()
 
-app.add_api_route("/api/v1/user", user_router)
+app.add_api_route("/api/v1/", user_router)
+
+
 
