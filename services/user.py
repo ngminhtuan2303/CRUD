@@ -1,69 +1,76 @@
 from typing import List
-from uuid import uuid4
+from schemas.user import User, UserCreate, UserUpdate
 from datetime import datetime
-from fastapi.exceptions import HTTPException
-from schemas.user import User,UserBase,UserCreate,UserUpdate
+from fastapi import HTTPException
 
 # Global variable
 users = [
-    {
-        "id": str(uuid4()), 
-        "full_name":"Nguyễn Văn A", 
-        "birthday": datetime.strptime("1990-01-01", "%Y-%m-%d"), 
-        "gender":"male",
-        "phone_number":"0123456789",
-        "address":"Hà Nội",
-        "email":"nguyenvana@gmail.com",
-        "created_at":datetime.now(),
-        "updated_at":datetime.now()
-    },
-    {
-        "id": str(uuid4()), 
-        "full_name":"Lê Thị B", 
-        "birthday":datetime.strptime("1995-02-01", "%Y-%m-%d"), 
-        "gender":"female",
-        "phone_number":"0987654321",
-        "address":"Sài Gòn",
-        "email":"lethib@gmail.com",
-        "introduction":"I'm a software engineer", 
-        "created_at":datetime.now(),
-        "updated_at":datetime.now()
-    }
+    User(
+        full_name="Nguyễn Văn A",
+        birthday=datetime.strptime("1990-01-01", "%Y-%m-%d"),
+        gender="Male",
+        phone_number="0123456789",
+        address="Hà Nội",
+        email="nguyenvana@gmail.com",
+    ),
+    User(
+        full_name="Lê Thị B",
+        birthday=datetime.strptime("1995-02-01", "%Y-%m-%d"),
+        gender="Female",
+        phone_number="0987654321",
+        address="Sài Gòn",
+        email="lethib@gmail.com",
+        introduction="I'm a software engineer",
+    ),
 ]
 
-# Users CRUD
-def get_user(user_id: str):
-    for user in users:
-        if user["id"] == user_id:
-            return user
-    return None
 
-def get_users(skip: int = 0, limit: int = 100):
-    return users[skip:skip+limit]
+class UserService:
+    @staticmethod
+    def create_user(user: UserCreate) -> User:
+        for u in users:
+            if u.email == user.email:
+                raise HTTPException(status_code=400, detail="Email already exists")
+        user_dict = user.dict()
+        u = User(**user_dict)
+        users.append(u)
+        return u
 
-def create_user(user: UserCreate):
-    for u in users:
-        if u["email"] == user.email:
-            raise HTTPException(status_code=400, detail="Email already exists")
-    db_user = user.dict()
-    db_user["id"] = str(uuid4())
-    db_user["created_at"] = datetime.now()
-    db_user["updated_at"] = datetime.now()
-    users.append(db_user)
-    return db_user
+    @staticmethod
+    def list_users(full_name: str = None, gender: str = None) -> List[User]:
+        if full_name and gender:
+            return [
+                user for user in users
+                if user.full_name.lower().startswith(full_name.lower()) and user.gender == gender.lower()
+            ]
+        elif full_name:
+            return [user for user in users if user.full_name.lower().startswith(full_name.lower())]
+        elif gender:
+            return [user for user in users if user.gender == gender.lower()]
+        return users
 
-def update_user(user_id: str, user: UserUpdate):
-    for i, u in enumerate(users):
-        if u["id"] == user_id:
-            for attr in user.dict(exclude_unset=True):
-                users[i][attr] = user.dict()[attr]
-            users[i]["updated_at"] = datetime.now()
-            return users[i]
-    return None
+    @staticmethod
+    def get_user(user_id: str) -> User:
+        for user in users:
+            if user.id == user_id:
+                return user
+        raise HTTPException(status_code=404, detail="User not found")
 
-def delete_user(user_id: str):
-    for i, u in enumerate(users):
-        if u["id"] == user_id:
-            del users[i]
-            return True
-    return None
+    @staticmethod
+    def update_user(user_id: str, user_update: UserUpdate) -> User:
+        for i, user in enumerate(users):
+            if user.id == user_id:
+                user_dict = user_update.dict(exclude_unset=True)
+                user_dict["updated_at"] = datetime.now()
+                updated_user = user.copy(update=user_dict)
+                users[i] = updated_user
+                return updated_user
+        raise HTTPException(status_code=404, detail="User not found")
+
+    @staticmethod
+    def delete_user(user_id: str):
+        for i, user in enumerate(users):
+            if user.id == user_id:
+                del users[i]
+                return {"message": "User deleted"}
+        raise HTTPException(status_code=404, detail="User not found")
