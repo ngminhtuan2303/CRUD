@@ -1,38 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
+from schemas.user import User,UserBase,UserCreate,UserUpdate
+from services.user import create_user,get_user,get_users,update_user,delete_user
 from typing import List
-from services.user import UserService
-from schemas.user import UserCreate, UserUpdate, UserOut
-
 router = APIRouter()
-user_service = UserService()
 
-@router.post("/", response_model=UserOut)
-def create_user(user_create: UserCreate, user_service: UserService = Depends()):
-    try:
-        return user_service.create_user(user_create)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=exc.args[0])
+# Users CRUD
+@router.post("/user", response_model=User)
+def create_user(user: UserCreate):
+    return create_user(user)
 
-@router.get("/", response_model=List[UserOut])
-def list_users(full_name: str = None, gender: str = None, user_service: UserService = Depends()):
-    return user_service.list_users(full_name, gender)
+@router.get("/user", response_model=List[User])
+def list_users(skip: int = 0, limit: int = 100):
+    return get_users(skip=skip, limit=limit)
 
-@router.get("/{user_id}", response_model=UserOut)
-def get_user(user_id: str, user_service: UserService = Depends()):
-    user_out = user_service.get_user(user_id)
-    if user_out:
-        return user_out
-    raise HTTPException(status_code=404, detail="User not found")
+@router.get("/user/{user_id}", response_model=User)
+def get_user(user_id: str):
+    db_user = get_user(user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
-@router.put("/{user_id}", response_model=UserOut)
-def update_user(user_id: str, user_update: UserUpdate, user_service: UserService = Depends()):
-    user_out = user_service.update_user(user_id, user_update)
-    if user_out:
-        return user_out
-    raise HTTPException(status_code=404, detail="User not found")
+@router.put("/user/{user_id}", response_model=User)
+def update_user(user_id: str, user: UserUpdate):
+    db_user = update_user(user_id=user_id, user=user)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
-@router.delete("/{user_id}")
-def delete_user(user_id: str, user_service: UserService = Depends()):
-    if user_service.delete_user(user_id):
-        return {"message": "User deleted"}
-    raise HTTPException(status_code=404, detail="User not found")
+@router.delete("/user/{user_id}")
+def delete_user(user_id: str):
+    result = delete_user(user_id=user_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "User deleted"}
