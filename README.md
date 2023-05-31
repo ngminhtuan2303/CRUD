@@ -154,3 +154,14 @@ api - tạo các API bằng fastapi
 #             del users[i]
 #             return {"message": "User deleted"}
 #     raise HTTPException(status_code=404, detail="User not found")
+## 
+Docker là một nền tảng ảo hóa nhẹ (containerization platform) cho phép các ứng dụng được đóng gói và chạy trên các container. Mỗi container đóng gói một ứng dụng và tất cả các phụ thuộc của nó để có thể chạy độc lập trên bất kỳ môi trường nào.
+
+Các lợi ích của Docker:
+
+Được sử dụng độc lập với hệ điều hành. Xây dựng, gia hạn, nâng cấp, xóa và quản lý một ứng dụng mà không ảnh hưởng đến phần còn lại của hệ thống.
+Giảm thiểu sự cố do xung đột về thư viện và version.
+Docker có khả năng tăng tốc độ triển khai.
+Khả năng đóng gói môi trường thử nghiệm. Chỉ cần cài đặt môi trường ở một nơi và chia sẻ một máy ảo cho mọi người để tiếp cận.
+Tự động hóa các tác vụ cài đặt ứng dụng.
+Để tạo một container, ta sử dụng một Dockerfile để mô tả cấu hình của container. Sau đó ta sử dụng lệnh `docker build` để tạo container từ file này. Sau khi tạo container, ta sử dụng lệnh `docker run` để chạy container và thực hiện các tác vụ mong muốn.

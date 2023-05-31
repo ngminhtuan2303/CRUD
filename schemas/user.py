@@ -4,6 +4,7 @@ from uuid import uuid4
 
 
 class UserBase(BaseModel):
+    id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -14,17 +15,35 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    id: str
+    full_name: str
+    birthday: datetime
+    gender: str
+    phone_number: str
+    address: str
+    email: EmailStr
+    introduction: str = None
+    created_at: datetime
+    updated_at: datetime
 
 
 class UserUpdate(UserBase):
-    pass
+    id: str
+    full_name: str
+    birthday: datetime
+    gender: str
+    phone_number: str
+    address: str
+    email: EmailStr
+    introduction: str = None
+    created_at: datetime
+    updated_at: datetime
 
 
 class User(UserBase):
     id: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime=datetime.now()
+    updated_at: datetime=datetime.now()
 
     @validator("gender")
     def validate_gender(cls, v):
@@ -37,8 +56,8 @@ class User(UserBase):
             kwargs['id'] = str(uuid4())
         super().__init__(**kwargs)
 
-        now = datetime.now()
-        if 'created_at' not in kwargs:
-            kwargs['created_at'] = now
+        # now = datetime.now()
+        # if 'created_at' not in kwargs:
+        #     kwargs['created_at'] = now
 
-        kwargs['updated_at'] = now
+        # kwargs['updated_at'] = now

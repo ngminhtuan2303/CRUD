@@ -26,17 +26,15 @@ users = [
 
 
 class UserService:
-    @staticmethod
-    def create_user(user: UserCreate) -> User:
+    
+    def create_user(user: User) -> UserCreate:
         for u in users:
             if u.email == user.email:
                 raise HTTPException(status_code=400, detail="Email already exists")
-        user_dict = user.dict()
-        u = User(**user_dict)
-        users.append(u)
-        return u
+        users.append(user)
+        return user
 
-    @staticmethod
+    
     def list_users(full_name: str = None, gender: str = None) -> List[User]:
         if full_name and gender:
             return [
@@ -49,25 +47,30 @@ class UserService:
             return [user for user in users if user.gender == gender.lower()]
         return users
 
-    @staticmethod
+    
     def get_user(user_id: str) -> User:
         for user in users:
             if user.id == user_id:
                 return user
         raise HTTPException(status_code=404, detail="User not found")
 
-    @staticmethod
-    def update_user(user_id: str, user_update: UserUpdate) -> User:
+    
+    def update_user(user_id: str, user_update: User) -> UserUpdate:
         for i, user in enumerate(users):
             if user.id == user_id:
-                user_dict = user_update.dict(exclude_unset=True)
-                user_dict["updated_at"] = datetime.now()
-                updated_user = user.copy(update=user_dict)
-                users[i] = updated_user
-                return updated_user
+                user.full_name = user_update.full_name
+                user.birthday = user_update.birthday
+                user.gender = user_update.gender
+                user.phone_number = user_update.phone_number
+                user.address = user_update.address
+                user.email = user_update.email
+                user.introduction = user_update.introduction
+                user.updated_at = datetime.now()
+                users[i] = user
+                return user
         raise HTTPException(status_code=404, detail="User not found")
 
-    @staticmethod
+    
     def delete_user(user_id: str):
         for i, user in enumerate(users):
             if user.id == user_id:
