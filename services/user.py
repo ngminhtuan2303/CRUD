@@ -1,38 +1,77 @@
-from typing import List
-from schemas.user import User
+from typing import List, Optional
+from uuid import UUID, uuid4
 from datetime import datetime
-from uuid import uuid4
-from data.user import users
+from schemas.user import User, UserCreate, UserUpdate
 
 
-def create_user(user: User) -> User:
-    user.id = str(uuid4())
-    user.created_at = datetime.now()
-    user.updated_at = datetime.now()
+users = [
+    User(
+        full_name="Nguyễn Văn A",
+        birthday=datetime.strptime("1990-01-01", "%Y-%m-%d"),
+        gender="male",
+        phone_number="0123456789",
+        address="Hà Nội",
+        email="nguyenvana@gmail.com",
+    ),
+    User(
+        full_name="Lê Thị B",
+        birthday=datetime.strptime("1995-02-01", "%Y-%m-%d"),
+        gender="female",
+        phone_number="0987654321",
+        address="Sài Gòn",
+        email="lethib@gmail.com",
+        introduction="I'm a software engineer",
+    ),
+]
+
+
+def create_user(user: UserCreate) -> User:
+    for u in users:
+        if u.email == user.email:
+            raise ValueError('Email already exists')
+    user = User(**user.dict())
+    user.id = uuid4()
     users.append(user)
     return user
 
-def get_user(user_id: str) -> User:
+
+def list_users(full_name: Optional[str] = None, gender: Optional[str] = None) -> List[User]:
+    results = []
+    for user in users:
+        if full_name and gender:
+            if user.full_name.lower().startswith(full_name.lower()) and user.gender == gender.lower():
+                results.append(user)
+        elif full_name:
+            if user.full_name.lower().startswith(full_name.lower()):
+                results.append(user)
+        elif gender:
+            if user.gender == gender.lower():
+                results.append(user)
+        else:
+            results.append(user)
+    return results
+
+
+def get_user(user_id: UUID) -> User:
     for user in users:
         if user.id == user_id:
             return user
-    return None
+    raise ValueError('User not found')
 
-def update_user(user_id: str, user: User) -> User:
-    for i, u in enumerate(users):
-        if u.id == user_id:
-            user.created_at = u.created_at
-            user.updated_at = datetime.now()
+
+def update_user(user_id: UUID, user_update: UserUpdate) -> User:
+    for i, user in enumerate(users):
+        if user.id == user_id:
+            user = User(**user_update.dict())
+            user.id = user_id
             users[i] = user
             return user
-    return None
+    raise ValueError('User not found')
 
-def delete_user(user_id: str) -> bool:
+
+def delete_user(user_id: UUID) -> None:
     for i, user in enumerate(users):
         if user.id == user_id:
             del users[i]
-            return True
-    return False
-
-def list_users() -> List[User]:
-    return users
+            return
+    raise ValueError('User not found')

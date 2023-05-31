@@ -25,24 +25,24 @@ class User(BaseModel):
             kwargs['id'] = str(uuid4())
         super().__init__(**kwargs)
 
-# class UserOut(BaseModel):
-#     id: str
-#     full_name: str
-#     birthday: datetime
-#     gender: str
-#     phone_number: str
-#     address: str
-#     email: EmailStr
-#     introduction: str = None
-#     created_at: datetime
-#     updated_at: datetime
+class UserCreate(BaseModel):
+    id: str
+    full_name: str
+    birthday: datetime
+    gender: str
+    phone_number: str
+    address: str
+    email: EmailStr
+    introduction: str = None
+    created_at: datetime
+    updated_at: datetime
 
 
-# class UserUpdate(BaseModel):
-#     full_name: str
-#     birthday: datetime
-#     gender: str
-#     phone_number: str
-#     address: str
-#     email: EmailStr
-#     introduction: str = None
+class UserUpdate(BaseModel):
+    full_name: str
+    birthday: datetime
+    gender: str
+    phone_number: str
+    address: str
+    email: EmailStr
+    introduction: str = None
