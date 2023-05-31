@@ -1,13 +1,6 @@
-from fastapi import FastAPI, HTTPException
-from api.user import router as user_router
-from datetime import datetime
-from uuid import uuid4
-from typing import List
-from pydantic import BaseModel, validator, EmailStr
+from fastapi import FastAPI
+from api import user
 
 app = FastAPI()
 
-app.add_api_route("/api/v1/", user_router)
-
-
-
+app.include_router(user.router, prefix="/api/v1/user")
