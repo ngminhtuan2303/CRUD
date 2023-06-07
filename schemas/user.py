@@ -1,10 +1,11 @@
+#schemas
 from pydantic import BaseModel, validator, EmailStr
 from datetime import datetime
 from uuid import uuid4
-
+from bson.objectid import ObjectId
 
 class UserBase(BaseModel):
-    id: str
+    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -15,7 +16,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    id: str
+    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -28,7 +29,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    id: str
+    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -41,7 +42,7 @@ class UserUpdate(UserBase):
 
 
 class User(UserBase):
-    id: str
+    #id: str
     created_at: datetime=datetime.now()
     updated_at: datetime=datetime.now()
 
@@ -51,13 +52,15 @@ class User(UserBase):
             raise ValueError("Invalid gender, must be 'male' or 'female'")
         return v.lower()
 
-    def __init__(self, **kwargs):
-        if 'id' not in kwargs:
-            kwargs['id'] = str(uuid4())
-        super().__init__(**kwargs)
+    # def __init__(self, **kwargs):
+    #     if 'id' not in kwargs:
+    #         kwargs['id'] = str(ObjectId())
+    #     super().__init__(**kwargs)
 
         # now = datetime.now()
         # if 'created_at' not in kwargs:
         #     kwargs['created_at'] = now
 
         # kwargs['updated_at'] = now
+    class Config:
+        orm_mode = True

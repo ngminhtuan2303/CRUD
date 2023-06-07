@@ -24,8 +24,10 @@ Tự fake 1,2 người dùng xong lưu vào 1 biến global
 Tạo model cho request body và response bằng pydantic
 Chia các tầng 
 schemas - Lưu các model pydantic
+model - kết nối với mongoDB sử dụng pymongo
 services - Xử lý các tác vụ mà nhận được từ api và trả kết quả
-api - tạo các API bằng fastapi
+api - tạo các API bằng fastapi với apirouter
+
 
 # from fastapi import FastAPI, HTTPException
 # from fastapi.param_functions import Query
