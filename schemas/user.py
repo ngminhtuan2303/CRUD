@@ -1,11 +1,10 @@
 #schemas
-from pydantic import BaseModel, validator, EmailStr
+from pydantic import BaseModel, validator, EmailStr, Field
 from datetime import datetime
 from uuid import uuid4
 from bson.objectid import ObjectId
 
 class UserBase(BaseModel):
-    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -16,7 +15,6 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -24,12 +22,9 @@ class UserCreate(UserBase):
     address: str
     email: EmailStr
     introduction: str = None
-    created_at: datetime
-    updated_at: datetime
 
 
 class UserUpdate(UserBase):
-    #id: str
     full_name: str
     birthday: datetime
     gender: str
@@ -42,7 +37,7 @@ class UserUpdate(UserBase):
 
 
 class User(UserBase):
-    #id: str
+    id: str = Field(..., alias='_id')
     created_at: datetime=datetime.now()
     updated_at: datetime=datetime.now()
 
@@ -52,15 +47,17 @@ class User(UserBase):
             raise ValueError("Invalid gender, must be 'male' or 'female'")
         return v.lower()
 
-    # def __init__(self, **kwargs):
-    #     if 'id' not in kwargs:
-    #         kwargs['id'] = str(ObjectId())
-    #     super().__init__(**kwargs)
+    def __init__(self, **kwargs):
+        print(kwargs)
+        if '_id' in kwargs:
+            kwargs['_id'] = str(kwargs['_id'])
 
-        # now = datetime.now()
-        # if 'created_at' not in kwargs:
-        #     kwargs['created_at'] = now
+        super().__init__(**kwargs)
 
-        # kwargs['updated_at'] = now
+        now = datetime.now()
+        if 'created_at' not in kwargs:
+            kwargs['created_at'] = now
+
+        kwargs['updated_at'] = now
     class Config:
         orm_mode = True

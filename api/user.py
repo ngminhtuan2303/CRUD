@@ -7,7 +7,7 @@ from services.user import UserService
 router = APIRouter()
 
 @router.post("/api/v1/user", response_model=UserCreate)
-def create_user(user: User):
+def create_user(user: UserCreate):
     return UserService.create_user(user)
 
 @router.get("/api/v1/user", response_model=List[User])

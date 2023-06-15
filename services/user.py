@@ -10,12 +10,7 @@ from bson.objectid import ObjectId
 
 class UserService:
     
-    def create_user(user: User) -> UserCreate:
-        # for u in users:
-        #     if u.email == user.email:
-        #         raise HTTPException(status_code=400, detail="Email already exists")
-        # users.append(user)
-        # return user
+    def create_user(user: UserCreate) -> UserCreate:
         user_dict = user.dict()
         user_dict["_id"] = ObjectId()
         user_dict["created_at"] = datetime.utcnow()
@@ -28,16 +23,6 @@ class UserService:
 
     
     def list_users(full_name: str = None, gender: str = None) -> List[User]:
-        # if full_name and gender:
-        #     return [
-        #         user for user in users
-        #         if user.full_name.lower().startswith(full_name.lower()) and user.gender == gender.lower()
-        #     ]
-        # elif full_name:
-        #     return [user for user in users if user.full_name.lower().startswith(full_name.lower())]
-        # elif gender:
-        #     return [user for user in users if user.gender == gender.lower()]
-        # return users
         query = {}
         if full_name:
             query["full_name"] = {"$regex": full_name, "$options": "i"}
@@ -48,31 +33,14 @@ class UserService:
 
     
     def get_user(user_id: str) -> User:
-        # for user in users:
-        #     if user.id == user_id:
-        #         return user
-        # raise HTTPException(status_code=404, detail="User not found")
         _id = ObjectId(user_id)
+        print(_id)
         user = collection.find_one({"_id": _id})
         if user:
-            print(user)
             return User(**user)
         raise HTTPException(status_code=404, detail="User not found")
     
     def update_user(user_id: str, user_update: User) -> UserUpdate:
-        # for i, user in enumerate(users):
-        #     if user.id == user_id:
-        #         user.full_name = user_update.full_name
-        #         user.birthday = user_update.birthday
-        #         user.gender = user_update.gender
-        #         user.phone_number = user_update.phone_number
-        #         user.address = user_update.address
-        #         user.email = user_update.email
-        #         user.introduction = user_update.introduction
-        #         user.updated_at = datetime.now()
-        #         users[i] = user
-        #         return user
-        # raise HTTPException(status_code=404, detail="User not found")
         user_dict = user_update.dict()
         user_dict["updated_at"] = datetime.utcnow()
         result = collection.update_one(
@@ -84,12 +52,9 @@ class UserService:
         raise HTTPException(status_code=404, detail="User not found")
     
     def delete_user(user_id: str):
-        # for i, user in enumerate(users):
-        #     if user.id == user_id:
-        #         del users[i]
-        #         return {"message": "User deleted"}
-        # raise HTTPException(status_code=404, detail="User not found")
         result = collection.delete_one({"_id": ObjectId(user_id)})
         if result.deleted_count:
             return {"message": "User deleted"}
         raise HTTPException(status_code=404, detail="User not found")
+    
+    
