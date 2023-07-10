@@ -1,8 +1,12 @@
 #schemas
 from pydantic import BaseModel, validator, EmailStr, Field
-from datetime import datetime
+from typing import Optional
+from datetime import datetime, date
 from uuid import uuid4
 from bson.objectid import ObjectId
+
+class UserImage(BaseModel):
+    image_url: str
 
 class UserBase(BaseModel):
     full_name: str
@@ -12,7 +16,7 @@ class UserBase(BaseModel):
     address: str
     email: EmailStr
     introduction: str = None
-
+    image: Optional[str]
 
 class UserCreate(UserBase):
     full_name: str
