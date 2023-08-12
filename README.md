@@ -9,6 +9,7 @@ Số đt
 Địa chỉ
 Email (unique)
 Giới thiệu
+Image
 created_at
 updated_at
 
@@ -20,9 +21,10 @@ Update tất cả thông tin của 1 user (PUT /api/v1/user/:id)
 Xóa 1 user (DEL /api/v1/user/:id)
 
 #### Yêu cầu: 
-Tự fake 1,2 người dùng xong lưu vào 1 biến global 
 Tạo model cho request body và response bằng pydantic
+Khi POST 1 user thì extract Image thành vector lưu vào milvus ta được id_milvus của ảnh -> lưu vào mongodb id_milvus và vector của ảnh
 Chia các tầng 
+milvus - kết nối với milvus
 schemas - Lưu các model pydantic
 model - kết nối với mongoDB sử dụng pymongo
 services - Xử lý các tác vụ mà nhận được từ api và trả kết quả

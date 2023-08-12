@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from schemas.user import User, UserCreate, UserUpdate
 from services.user import UserService
+from schemas.facesearch import Face, FaceSearch
 
 router = APIRouter()
 
@@ -25,3 +26,9 @@ def update_user(user_id: str, user_update: User):
 @router.delete("/api/v1/user/{user_id}")
 def delete_user(user_id: str):
     return UserService.delete_user(user_id)
+
+@router.post("/api/v1/facesearch", response_model=FaceSearch)
+def search_face(face: FaceSearch):
+    return UserService.search_face(face)
+        
+    

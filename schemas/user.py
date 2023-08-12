@@ -5,8 +5,6 @@ from datetime import datetime, date
 from uuid import uuid4
 from bson.objectid import ObjectId
 
-class UserImage(BaseModel):
-    image_url: str
 
 class UserBase(BaseModel):
     full_name: str
@@ -17,6 +15,8 @@ class UserBase(BaseModel):
     email: EmailStr
     introduction: str = None
     image: Optional[str]
+    id_milvus: Optional[int] = None
+    img_vector: Optional[str] = None
 
 class UserCreate(UserBase):
     full_name: str
@@ -26,6 +26,8 @@ class UserCreate(UserBase):
     address: str
     email: EmailStr
     introduction: str = None
+    # image: Optional[str]
+    # id_milvus: Optional[int] = None
 
 
 class UserUpdate(UserBase):
@@ -44,7 +46,6 @@ class User(UserBase):
     id: str = Field(..., alias='_id')
     created_at: datetime=datetime.now()
     updated_at: datetime=datetime.now()
-
     @validator("gender")
     def validate_gender(cls, v):
         if v.lower() not in ["male", "female"]:
@@ -64,4 +65,4 @@ class User(UserBase):
 
         kwargs['updated_at'] = now
     class Config:
-        orm_mode = True
+        from_attributes = True
